@@ -2,187 +2,113 @@
 
 API REST para geração de conteúdo literário usando IA (Google Gemini).
 
-## 📋 Visão Geral
+Gera capítulos completos de livros e sugestões criativas (títulos, personagens, enredos, ambientações) usando inteligência artificial.
 
-O TaleSeed é uma API que permite gerar capítulos completos de livros e obter sugestões criativas (títulos, personagens, enredos, ambientações) usando inteligência artificial.
+---
 
-## 🚀 Instalação
+## 🚀 Início Rápido
 
-### Pré-requisitos
-
-- Python 3.8 ou superior
-- Chave de API do Google Gemini ([Obter aqui](https://makersuite.google.com/app/apikey))
-
-### Passos
-
-1. **Clone o repositório** (ou extraia os arquivos)
-
-2. **Instale as dependências:**
+### 1. Instalar
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Configure a chave da API:**
-
-Crie um arquivo `.env` na raiz do projeto:
+### 2. Configurar
+Crie arquivo `.env`:
 ```env
 GEMINI_API_KEY=sua_chave_aqui
 GEMINI_MODEL=gemini-1.5-flash
-LOG_LEVEL=INFO
-TEMPERATURE=0.7
-MAX_OUTPUT_TOKENS=8192
-PORT=8000
 ```
 
-4. **Execute a API:**
+> 🔑 Obter chave: https://makersuite.google.com/app/apikey
+
+### 3. Executar
 ```bash
 python main.py
 ```
 
-A API estará disponível em `http://localhost:8000`
+**Acesso:** http://localhost:8000
+
+**Documentação:** http://localhost:8000/docs
+
+---
+
+---
 
 ## 📡 Endpoints
 
-### 1. Gerar Capítulo
+### POST /generate-chapter
+Gera capítulo completo de livro.
 
-**POST** `/generate-chapter`
-
-Gera o texto completo de um capítulo baseado em resumo e contexto.
-
-#### Request Body:
+**Request:**
 ```json
 {
-  "projectId": "string",
-  "chapterId": "string",
-  "projectTitle": "A Jornada do Herói",
-  "chapterTitle": "O Chamado à Aventura",
-  "chapterSummary": "O protagonista recebe o chamado para sua jornada",
-  "keyPoints": [
-    "Introduzir o protagonista",
-    "Apresentar o mentor",
-    "Mostrar o mundo ordinário"
-  ],
-  "tone": "épico e inspirador",
-  "writingStyle": "narrativo com diálogos",
-  "setting": "Reino medieval fantástico",
-  "lengthInPages": 8,
-  "previousChapters": [
-    {
-      "title": "Prólogo",
-      "summary": "Introdução ao mundo",
-      "generatedText": "Texto do capítulo anterior (opcional)"
-    }
-  ],
+  "projectId": "proj_001",
+  "chapterId": "ch_001",
+  "projectTitle": "Minha História",
+  "chapterTitle": "Capítulo 1",
+  "chapterSummary": "O início da aventura",
+  "keyPoints": ["Apresentar protagonista"],
+  "tone": "aventureiro",
+  "writingStyle": "narrativo",
+  "setting": "floresta mística",
+  "lengthInPages": 5,
+  "previousChapters": [],
   "mode": "single",
   "language": "pt-BR"
 }
 ```
 
-#### Response:
-```json
-{
-  "text": "Era uma vez em um reino distante...",
-  "tokensUsed": 2048,
-  "metadata": {
-    "model": "gemini-1.5-flash",
-    "createdAt": "2025-11-03T10:30:00Z",
-    "temperature": 0.7,
-    "maxTokens": 8192
-  }
-}
-```
+### POST /creative-suggestions
+Gera sugestões criativas.
 
-### 2. Sugestões Criativas
+**Tipos:** `title`, `character`, `plot`, `setting`
 
-**POST** `/creative-suggestions`
-
-Gera sugestões criativas (títulos, nomes de personagens, enredos, ambientações).
-
-#### Request Body:
+**Request:**
 ```json
 {
   "type": "title",
-  "context": "Uma história sobre um jovem mago que descobre seus poderes",
-  "genre": "fantasia",
-  "tone": "épico e misterioso",
+  "context": "História sobre piratas espaciais",
+  "genre": "ficção científica",
+  "tone": "aventureiro",
   "count": 5
 }
 ```
 
-**Tipos disponíveis:**
-- `title` - Títulos para a história
-- `character` - Nomes de personagens
-- `plot` - Ideias de enredo
-- `setting` - Ambientações
+### GET /health
+Status da API.
 
-#### Response:
-```json
-{
-  "suggestions": [
-    {
-      "text": "O Despertar dos Arcanos",
-      "description": "Um título que evoca mistério e descoberta mágica"
-    },
-    {
-      "text": "Sombras do Éter",
-      "description": "Sugere um lado sombrio da magia"
-    }
-  ]
-}
-```
+---
 
-### 3. Health Check
-
-**GET** `/health`
-
-Verifica o status da API.
-
-#### Response:
-```json
-{
-  "status": "healthy",
-  "service": "TaleSeed API"
-}
-```
-
-## 📚 Documentação Interativa
-
-Após iniciar a API, acesse:
-
-- **Swagger UI:** `http://localhost:8000/docs`
-- **ReDoc:** `http://localhost:8000/redoc`
-
-## 🔧 Configuração
-
-### Variáveis de Ambiente (.env)
+## 🔧 Configuração (.env)
 
 | Variável | Descrição | Padrão |
 |----------|-----------|--------|
-| `GEMINI_API_KEY` | Chave da API do Google Gemini | **Obrigatório** |
-| `GEMINI_MODEL` | Modelo do Gemini a usar | `gemini-1.5-flash` |
-| `LOG_LEVEL` | Nível de log (DEBUG/INFO/WARNING/ERROR) | `INFO` |
+| `GEMINI_API_KEY` | Chave da API (obrigatório) | - |
+| `GEMINI_MODEL` | Modelo Gemini | `gemini-1.5-flash` |
 | `TEMPERATURE` | Criatividade (0.0-1.0) | `0.7` |
-| `MAX_OUTPUT_TOKENS` | Máximo de tokens na resposta | `8192` |
+| `MAX_OUTPUT_TOKENS` | Máximo de tokens | `8192` |
+| `LOG_LEVEL` | Nível de log | `INFO` |
 | `PORT` | Porta da API | `8000` |
 
-## 💡 Exemplos de Uso
+---
 
-### Python
+## � Exemplo de Uso
+
 ```python
 import requests
 
-# Gerar um capítulo
 response = requests.post("http://localhost:8000/generate-chapter", json={
-    "projectId": "proj_001",
-    "chapterId": "ch_001",
-    "projectTitle": "Minha História",
+    "projectId": "test",
+    "chapterId": "ch1",
+    "projectTitle": "Teste",
     "chapterTitle": "Capítulo 1",
-    "chapterSummary": "O início da aventura",
-    "keyPoints": ["Apresentar protagonista", "Criar atmosfera"],
+    "chapterSummary": "Início",
+    "keyPoints": ["Apresentar herói"],
     "tone": "aventureiro",
     "writingStyle": "narrativo",
-    "setting": "cidade moderna",
-    "lengthInPages": 5,
+    "setting": "floresta",
+    "lengthInPages": 2,
     "previousChapters": [],
     "mode": "single",
     "language": "pt-BR"
@@ -191,97 +117,48 @@ response = requests.post("http://localhost:8000/generate-chapter", json={
 print(response.json()["text"])
 ```
 
-### cURL
+---
+
+## 🚀 Deploy (Render)
+
+1. **Suba para GitHub:**
 ```bash
-curl -X POST "http://localhost:8000/creative-suggestions" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "character",
-    "context": "Um detetive em uma cidade cyberpunk",
-    "genre": "ficção científica noir",
-    "tone": "sombrio",
-    "count": 3
-  }'
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/SEU_USUARIO/taleseed-api.git
+git push -u origin main
 ```
 
-### JavaScript (Fetch)
-```javascript
-const response = await fetch('http://localhost:8000/generate-chapter', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    projectId: 'proj_001',
-    chapterId: 'ch_001',
-    projectTitle: 'Minha História',
-    chapterTitle: 'Capítulo 1',
-    chapterSummary: 'O início da aventura',
-    keyPoints: ['Apresentar protagonista'],
-    tone: 'aventureiro',
-    writingStyle: 'narrativo',
-    setting: 'cidade moderna',
-    lengthInPages: 5,
-    previousChapters: [],
-    mode: 'single',
-    language: 'pt-BR'
-  })
-});
+2. **Deploy no Render:**
+   - Acesse https://render.com
+   - "New +" → "Web Service"
+   - Conecte seu repositório
+   - Configure `GEMINI_API_KEY`
+   - Deploy!
 
-const data = await response.json();
-console.log(data.text);
-```
+**URL:** `https://seu-app.onrender.com`
 
-## 🏗️ Estrutura do Projeto
+---
+
+## 🏗️ Estrutura
 
 ```
 .
-├── main.py                      # Aplicação FastAPI principal
-├── requirements.txt             # Dependências Python
-├── .env                         # Configurações (não versionado)
-├── README.md                    # Este arquivo
+├── main.py              # FastAPI app
+├── requirements.txt     # Dependências
+├── render.yaml          # Config Render
 └── src/
-    ├── __init__.py
-    ├── models.py                # Modelos Pydantic
+    ├── models.py        # Modelos Pydantic
     └── services/
-        ├── __init__.py
-        └── ai_service.py        # Serviço de geração com IA
+        └── ai_service.py # Serviço IA
 ```
 
-## 🔒 Segurança
-
-- **Nunca** compartilhe sua `GEMINI_API_KEY`
-- Em produção, configure CORS adequadamente
-- Use HTTPS em produção
-- Implemente rate limiting se necessário
-
-## 🐛 Solução de Problemas
-
-### Erro: "GEMINI_API_KEY não encontrada"
-- Verifique se o arquivo `.env` existe na raiz do projeto
-- Certifique-se de que a variável está definida corretamente
-
-### Erro 500 ao gerar conteúdo
-- Verifique sua conexão com a internet
-- Confirme que sua chave API é válida
-- Verifique os logs para mais detalhes
-
-### API não inicia
-- Verifique se a porta 8000 não está em uso
-- Confirme que todas as dependências estão instaladas
-- Execute: `pip install -r requirements.txt`
+---
 
 ## 📝 Licença
 
-Este projeto está sob a licença MIT.
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se livre para abrir issues ou pull requests.
-
-## 📧 Suporte
-
-Para dúvidas ou suporte, abra uma issue no repositório do projeto.
+MIT
 
 ---
 
