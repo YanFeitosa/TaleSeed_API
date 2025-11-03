@@ -81,8 +81,11 @@ class AIService:
                     text_preview = chapter.generatedText[:500] + "..." if len(chapter.generatedText) > 500 else chapter.generatedText
                     previous_context += f"Trecho: {text_preview}\n"
         
-        # Pontos-chave
-        key_points_text = "\n".join([f"- {point}" for point in request.keyPoints])
+        # Pontos-chave (opcional)
+        key_points_section = ""
+        if request.keyPoints:
+            key_points_text = "\n".join([f"- {point}" for point in request.keyPoints])
+            key_points_section = f"\n## PONTOS-CHAVE A INCLUIR:\n{key_points_text}\n"
         
         prompt = f"""Você é um escritor profissional especializado em criar narrativas envolventes.
 
@@ -99,15 +102,12 @@ class AIService:
 - Estilo: {request.writingStyle}
 - Ambientação: {request.setting}
 - Extensão desejada: Aproximadamente {request.lengthInPages} páginas (cerca de {request.lengthInPages * 250} palavras)
-
-## PONTOS-CHAVE A INCLUIR:
-{key_points_text}
-{previous_context}
+{key_points_section}{previous_context}
 
 ## INSTRUÇÕES:
 1. Escreva o capítulo completo em {request.language}
 2. Mantenha o tom {request.tone} e o estilo {request.writingStyle}
-3. Certifique-se de incluir todos os pontos-chave mencionados
+{"3. Certifique-se de incluir todos os pontos-chave mencionados" if request.keyPoints else "3. Desenvolva a narrativa de acordo com o resumo fornecido"}
 4. A narrativa deve fluir naturalmente dos capítulos anteriores (se houver)
 5. Use diálogos, descrições vívidas e desenvolvimento de personagens
 6. Crie uma narrativa envolvente que prenda a atenção do leitor

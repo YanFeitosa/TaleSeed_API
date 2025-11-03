@@ -23,7 +23,7 @@ class GenerateChapterRequest(BaseModel):
     projectTitle: str
     chapterTitle: str
     chapterSummary: str
-    keyPoints: List[str]
+    keyPoints: Optional[List[str]] = Field(default_factory=list)
     tone: str
     writingStyle: str
     setting: str

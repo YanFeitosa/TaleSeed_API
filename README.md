@@ -48,7 +48,7 @@ Gera capítulo completo de livro.
   "projectTitle": "Minha História",
   "chapterTitle": "Capítulo 1",
   "chapterSummary": "O início da aventura",
-  "keyPoints": ["Apresentar protagonista"],
+  "keyPoints": ["Apresentar protagonista"],  // opcional
   "tone": "aventureiro",
   "writingStyle": "narrativo",
   "setting": "floresta mística",
@@ -104,7 +104,7 @@ response = requests.post("http://localhost:8000/generate-chapter", json={
     "projectTitle": "Teste",
     "chapterTitle": "Capítulo 1",
     "chapterSummary": "Início",
-    "keyPoints": ["Apresentar herói"],
+    # keyPoints é opcional
     "tone": "aventureiro",
     "writingStyle": "narrativo",
     "setting": "floresta",
