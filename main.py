@@ -15,7 +15,9 @@ from src.models import (
     GenerateChapterRequest,
     GenerateChapterResponse,
     CreativeSuggestionsRequest,
-    CreativeSuggestionsResponse
+    CreativeSuggestionsResponse,
+    SummarizeRequest,
+    SummarizeResponse
 )
 from src.services.ai_service import AIService
 
@@ -179,6 +181,46 @@ async def creative_suggestions(request: CreativeSuggestionsRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Erro ao gerar sugestões. Por favor, tente novamente."
+        )
+
+
+@app.post(
+    "/summarize",
+    response_model=SummarizeResponse,
+    status_code=status.HTTP_200_OK,
+    tags=["Generation"]
+)
+async def summarize_chapter(request: SummarizeRequest):
+    """
+    Gera resumo estruturado de capítulo focado em continuidade narrativa.
+    
+    Este endpoint analisa o texto de um capítulo e extrai:
+    - Resumo narrativo completo
+    - Lista de personagens mencionados
+    - Lista de ambientações/locais
+    - Eventos-chave do capítulo
+    - Estado final (crucial para continuidade no próximo capítulo)
+    
+    Use este endpoint para processar capítulos gerados e criar contexto
+    rico para geração de capítulos subsequentes.
+    """
+    try:
+        ai_service: AIService = app.state.ai_service
+        response = await ai_service.summarize_chapter(request)
+        return response
+    
+    except ValueError as e:
+        logger.error(f"Erro de validação: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    
+    except Exception as e:
+        logger.error(f"Erro ao gerar resumo: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erro ao gerar resumo. Por favor, tente novamente."
         )
 
 

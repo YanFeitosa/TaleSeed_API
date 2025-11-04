@@ -75,6 +75,40 @@ Gera sugestões criativas.
 }
 ```
 
+### POST /summarize
+Gera resumo estruturado de capítulo focado em continuidade.
+
+**Request:**
+```json
+{
+  "chapterText": "Texto completo do capítulo aqui...",
+  "chapterTitle": "Capítulo 1",  // opcional
+  "language": "pt-BR"
+}
+```
+
+**Response:**
+```json
+{
+  "summary": "Resumo narrativo completo do capítulo...",
+  "characters": [
+    "João Silva (protagonista, detetive)",
+    "Maria Santos (testemunha)"
+  ],
+  "settings": [
+    "Café Central da cidade",
+    "Delegacia do 5º distrito"
+  ],
+  "keyEvents": [
+    "João recebe chamado sobre crime",
+    "Entrevista com testemunha Maria",
+    "Descoberta de pista crucial"
+  ],
+  "endingState": "João sai da delegacia com nova pista. Está determinado mas preocupado...",
+  "tokensUsed": 450
+}
+```
+
 ### GET /health
 Status da API.
 
@@ -83,7 +117,167 @@ Rota leve para acordar o servidor (útil para evitar cold start no Render).
 
 ---
 
-## 🔧 Configuração (.env)
+## � Garantindo Continuidade entre Capítulos
+
+Para melhor continuidade narrativa entre capítulos:
+
+### ✅ Sempre Envie `previousChapters`
+```json
+{
+  "projectId": "proj_001",
+  "chapterId": "ch_002",
+  "chapterTitle": "Capítulo 2",
+  "chapterSummary": "A jornada continua",
+  "previousChapters": [
+    {
+      "title": "Capítulo 1",
+      "summary": "Resumo do capítulo anterior",
+      "generatedText": "Texto COMPLETO do capítulo 1 aqui..."
+    }
+  ],
+  "tone": "aventureiro",
+  "writingStyle": "narrativo",
+  "setting": "floresta mística",
+  "lengthInPages": 5,
+  "mode": "single",
+  "language": "pt-BR"
+}
+```
+
+### 🎯 Dicas Importantes
+
+1. **Inclua o texto completo** dos capítulos anteriores no campo `generatedText`
+2. A IA analisa especialmente o **final do capítulo anterior** para garantir transição suave
+3. Mantenha **tom, estilo e ambientação consistentes** entre capítulos
+4. Use `keyPoints` para guiar eventos específicos que devem continuar do capítulo anterior
+
+### ⚠️ O que a IA Considera
+
+- **Últimos eventos** do capítulo anterior
+- **Estado emocional** dos personagens ao final
+- **Linha temporal** e sequência de eventos
+- **Detalhes e consistência** com o que já foi escrito
+
+---
+
+## � Fluxo Recomendado com /summarize
+
+Para **máxima continuidade** entre capítulos, use este fluxo:
+
+### Passo 1: Gerar Capítulo 1
+```bash
+POST /generate-chapter
+{
+  "chapterTitle": "Capítulo 1",
+  "chapterSummary": "Início da aventura",
+  ...
+}
+```
+
+### Passo 2: Resumir Capítulo 1
+```bash
+POST /summarize
+{
+  "chapterText": "[texto completo do capítulo 1]",
+  "chapterTitle": "Capítulo 1"
+}
+```
+
+**Resposta estruturada:**
+```json
+{
+  "summary": "Resumo rico e detalhado...",
+  "characters": ["João (protagonista)", "Maria (aliada)"],
+  "settings": ["Floresta Negra", "Cabana abandonada"],
+  "keyEvents": ["João acorda", "Encontra Maria", "Descobrem mapa"],
+  "endingState": "João e Maria decidem seguir o mapa ao amanhecer..."
+}
+```
+
+### Passo 3: Gerar Capítulo 2 (com contexto rico)
+```bash
+POST /generate-chapter
+{
+  "chapterTitle": "Capítulo 2",
+  "chapterSummary": "A jornada começa",
+  "previousChapters": [
+    {
+      "title": "Capítulo 1",
+      "summary": "[use o 'summary' do /summarize]",
+      "generatedText": "[texto completo do cap 1]"
+    }
+  ],
+  ...
+}
+```
+
+### 💡 Vantagens deste Fluxo
+
+- ✅ **Resumo rico** com personagens, locais e eventos estruturados
+- ✅ **Estado final claro** para continuidade perfeita
+- ✅ **Consistência garantida** de nomes e detalhes
+- ✅ **Contexto otimizado** para a IA
+
+### 📝 Exemplo de Código Completo
+
+```python
+import requests
+
+# 1. Gerar Capítulo 1
+chapter1_response = requests.post("http://localhost:8000/generate-chapter", json={
+    "projectId": "test",
+    "chapterId": "ch1",
+    "projectTitle": "A Aventura",
+    "chapterTitle": "Capítulo 1: O Despertar",
+    "chapterSummary": "Protagonista acorda em lugar desconhecido",
+    "tone": "misterioso",
+    "writingStyle": "narrativo",
+    "setting": "floresta sombria",
+    "lengthInPages": 3,
+    "previousChapters": [],
+    "mode": "single",
+    "language": "pt-BR"
+})
+
+chapter1_text = chapter1_response.json()["text"]
+
+# 2. Resumir Capítulo 1
+summary_response = requests.post("http://localhost:8000/summarize", json={
+    "chapterText": chapter1_text,
+    "chapterTitle": "Capítulo 1",
+    "language": "pt-BR"
+})
+
+summary = summary_response.json()
+
+# 3. Gerar Capítulo 2 com contexto rico
+chapter2_response = requests.post("http://localhost:8000/generate-chapter", json={
+    "projectId": "test",
+    "chapterId": "ch2",
+    "projectTitle": "A Aventura",
+    "chapterTitle": "Capítulo 2: Primeiros Passos",
+    "chapterSummary": "Protagonista explora e encontra pistas",
+    "previousChapters": [
+        {
+            "title": "Capítulo 1",
+            "summary": summary["summary"],  # Resumo estruturado
+            "generatedText": chapter1_text
+        }
+    ],
+    "tone": "misterioso",
+    "writingStyle": "narrativo",
+    "setting": "floresta sombria",
+    "lengthInPages": 3,
+    "mode": "single",
+    "language": "pt-BR"
+})
+
+print("✅ Capítulos gerados com continuidade perfeita!")
+```
+
+---
+
+## �🔧 Configuração (.env)
 
 | Variável | Descrição | Padrão |
 |----------|-----------|--------|

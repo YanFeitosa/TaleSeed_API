@@ -68,3 +68,18 @@ class CreativeSuggestionsRequest(BaseModel):
 class CreativeSuggestionsResponse(BaseModel):
     """Response com sugestões criativas."""
     suggestions: List[CreativeSuggestion]
+
+
+# ==================== Modelos para /summarize ====================
+
+class SummarizeRequest(BaseModel):
+    """Request para resumo de capítulo focado em continuidade."""
+    chapterText: str = Field(..., min_length=100, description="Texto completo do capítulo a ser resumido")
+    chapterTitle: Optional[str] = Field(None, description="Título do capítulo (opcional)")
+    language: str = Field(default="pt-BR", description="Idioma do resumo")
+
+
+class SummarizeResponse(BaseModel):
+    """Response com resumo completo e estruturado em um único campo."""
+    summary: str = Field(..., description="Resumo completo incluindo: narrativa, personagens, locais, eventos-chave e estado final")
+    tokensUsed: int
