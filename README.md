@@ -78,6 +78,9 @@ Gera sugestões criativas.
 ### GET /health
 Status da API.
 
+### GET /ping
+Rota leve para acordar o servidor (útil para evitar cold start no Render).
+
 ---
 
 ## 🔧 Configuração (.env)

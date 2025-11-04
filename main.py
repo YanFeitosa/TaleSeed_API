@@ -110,6 +110,12 @@ async def health_check():
     }
 
 
+@app.get("/ping")
+async def ping():
+    """Rota leve para acordar o servidor (wake-up)."""
+    return {"status": "pong"}
+
+
 @app.post(
     "/generate-chapter",
     response_model=GenerateChapterResponse,
